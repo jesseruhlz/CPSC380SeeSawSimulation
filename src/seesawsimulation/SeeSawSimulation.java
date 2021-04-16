@@ -3,6 +3,7 @@ import java.util.concurrent.*; //this is needed to use semaphore in java
 import java.io.*;
 import java.util.*;
 
+
 /**
  * Name: Jesse Ruhl
  * Chapman ID: 
@@ -18,18 +19,23 @@ public class SeeSawSimulation {
     
     // try to place in main later to see if it still works this way
     static Semaphore sem = new Semaphore(1); 
+    static Semaphore outSem = new Semaphore(1);
 
     //main function
     public static void main(String[] args) {
         // TODO code application logic here
         //Thread 1 for Fread created here
-        Thread t1 = new Thread(new FredSee(SeeSawSimulation.sem));
+        Thread t1 = new Thread(new FredSee(SeeSawSimulation.sem, SeeSawSimulation.outSem));
+        Thread t2 = new Thread(new WilmaSaw(SeeSawSimulation.sem, SeeSawSimulation.outSem));
         // Thread 2 for Wilma created here
         
         //try to start each thread and join each thread
         try{
             t1.start();
+            t2.start();
+            
             t1.join();
+            t2.join();
         }
         catch(InterruptedException ie){
             ie.printStackTrace();
@@ -58,8 +64,8 @@ public class SeeSawSimulation {
                     fredHeight = fredHeight +1;
                 }
                 else{
-                    wilmaHeight = wilmaHeight +  1;
-                    fredHeight = fredHeight - 1;
+                    wilmaHeight = wilmaHeight +  1.5;
+                    fredHeight = fredHeight - 1.5;
                 }
                 time++;
             }
@@ -72,26 +78,41 @@ public class SeeSawSimulation {
             System.out.println("Interrupted Exception");
         }
     }
-        
-    }
+            // will ouput the updates on each interval
     
-    // will ouput the updates on each interval
-    /*
-    public static void outputSema(Semaphore outSem){
-        
+    public static void outSemaphore(Semaphore outSem){
+        try{
+            outSem.acquire();
+            if(time == 1){
+                System.out.println("Intial Positions");
+            }
+            System.out.println("Time " + time + "\t\tFred's Height: " + fredHeight + "\t\tWilma's Height: " + wilmaHeight);
+            outSem.release();
+        }
+        catch(InterruptedException ie){
+            System.out.println("Interrupted Exception");
+        }
     }
-    */
+}
     
     class FredSee extends Thread implements Runnable{
         Semaphore sem;
+        Semaphore outSem;
         
-        public FredSee(Semaphore sem){
+        public FredSee(Semaphore sem, Semaphore outSem){
             this.sem = sem;
+            this.outSem = outSem;
         }
+        
         public void run(){
+            See();
+        }
+        
+        public void See(){
             try{
                 for(int x = -0; x < 50; x++){
                     SeeSawSimulation.calculateHeight(sem);
+                    SeeSawSimulation.outSemaphore(outSem);
                     Thread.sleep(1000);
                 }
             }
@@ -99,17 +120,24 @@ public class SeeSawSimulation {
                 ex.printStackTrace();
             }
     }
+}
     
     class WilmaSaw extends Thread implements Runnable{
         Semaphore sem;
+        Semaphore outSem; 
         
-        public WilmaSaw(Semaphore sem){
+        public WilmaSaw(Semaphore sem, Semaphore outSem){
             this.sem = sem;
+            this.outSem = outSem;
         }
         public void run(){
+            Saw();
+        }
+        public void Saw(){
             try{
                 for(int y = -0; y < 50; y++){
                     SeeSawSimulation.calculateHeight(sem);
+                    SeeSawSimulation.outSemaphore(outSem);
                     Thread.sleep(1000);
                 }
             }
@@ -119,4 +147,3 @@ public class SeeSawSimulation {
         }
     }
     
-}
