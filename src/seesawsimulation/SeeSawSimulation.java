@@ -59,10 +59,17 @@ public class SeeSawSimulation {
                 System.out.println("Fred is rising.");
             }
             try{
+                //if fred is rising he should move 1 foot up per second
+                //likewise wilma will fall 1 foot per second
                 if(fredUp){
                     wilmaHeight = wilmaHeight - 1;
                     fredHeight = fredHeight +1;
                 }
+                //if wilma is rising she should move 1.5 feet up per second
+                //and fred should fall 1.5 feet per second
+                //becuase of this there will be less print statements since it will go
+                //7->5.5->4->2.5->1 so should expect only 4 changing positions (exluding start position 1)
+                //likewise for the person going up
                 else{
                     wilmaHeight = wilmaHeight +  1.5;
                     fredHeight = fredHeight - 1.5;
@@ -82,6 +89,16 @@ public class SeeSawSimulation {
     
     public static void outSemaphore(Semaphore outSem){
         try{
+            /*
+            for (int i = 0; i < 10; i++){
+                outSem.acquire();
+                if(time == 1){
+                    System.out.println("Intial Positions");
+                }
+                System.out.println("Time " + time + "\t\tFred's Height: " + fredHeight + "\t\tWilma's Height: " + wilmaHeight);
+                outSem.release();
+            }*/
+            
             outSem.acquire();
             if(time == 1){
                 System.out.println("Intial Positions");
@@ -110,10 +127,10 @@ public class SeeSawSimulation {
         
         public void See(){
             try{
-                for(int x = -0; x < 50; x++){
+                for(int x = -0; x < 50; x++){ //using 50 since that will produce 10 cycles of seesaw going up and down
                     SeeSawSimulation.calculateHeight(sem);
                     SeeSawSimulation.outSemaphore(outSem);
-                    Thread.sleep(1000);
+                    Thread.sleep(1000); // in milliseconds so 1000 would be 1 sec wait time between each thread
                 }
             }
             catch(InterruptedException ex){
@@ -135,10 +152,10 @@ public class SeeSawSimulation {
         }
         public void Saw(){
             try{
-                for(int y = -0; y < 50; y++){
+                for(int y = -0; y < 50; y++){ //using 50 since that will produce 10 cycles of seesaw going up and down
                     SeeSawSimulation.calculateHeight(sem);
                     SeeSawSimulation.outSemaphore(outSem);
-                    Thread.sleep(1000);
+                    Thread.sleep(1000); // in milliseconds so 1000 would be 1 sec wait time between each thread
                 }
             }
             catch(InterruptedException ex){
