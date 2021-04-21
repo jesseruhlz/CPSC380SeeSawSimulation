@@ -122,10 +122,6 @@ public class SeeSawSimulation {
         }
         
         public void run(){
-            See();
-        }
-        
-        public void See(){
             try{
                 for(int x = -0; x < 50; x++){ //using 50 since that will produce 10 cycles of seesaw going up and down
                     SeeSawSimulation.calculateHeight(sem);
@@ -147,10 +143,8 @@ public class SeeSawSimulation {
             this.sem = sem;
             this.outSem = outSem;
         }
+
         public void run(){
-            Saw();
-        }
-        public void Saw(){
             try{
                 for(int y = -0; y < 50; y++){ //using 50 since that will produce 10 cycles of seesaw going up and down
                     SeeSawSimulation.calculateHeight(sem);
